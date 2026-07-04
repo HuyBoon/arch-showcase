@@ -1,0 +1,39 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Project {
+  id               String     @id @default(uuid())
+  name             String
+  category         String
+  location         String
+  year             Int
+  area             String
+  budget           String
+  architect        String
+  client           String
+  imageUrl         String
+  additionalImages String[]
+  description      String
+  features         String[]
+  views            Int        @default(0)
+  featured         Boolean    @default(false)
+  createdAt        DateTime   @default(now())
+  inquiries        Inquiry[]
+}
+
+model Inquiry {
+  id        String   @id @default(uuid())
+  projectId String
+  project   Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  name      String
+  email     String
+  phone     String?
+  message   String
+  createdAt DateTime @default(now())
+}

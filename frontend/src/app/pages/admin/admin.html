@@ -1,0 +1,502 @@
+<div class="container mx-auto px-6 py-12 max-w-7xl">
+  <!-- Page Header -->
+  <div class="flex flex-col md:flex-row md:items-center justify-between gap-6 pb-8 border-b border-slate-150 mb-10">
+    <div>
+      <h1 class="text-3xl font-extrabold text-slate-900 tracking-tight">Studio Control Panel</h1>
+      <p class="text-slate-500 text-sm mt-1">Manage architectural projects list and respond to client space inquiries.</p>
+    </div>
+
+    <!-- Tab Buttons -->
+    <div class="flex bg-slate-100 p-1.5 rounded-xl border border-slate-200/40 self-start md:self-center">
+      <button
+        (click)="setTab('projects')"
+        [class]="activeTab === 'projects' ? 'bg-white text-slate-950 shadow-sm' : 'text-slate-600 hover:text-slate-900'"
+        class="px-5 py-2 rounded-lg text-sm font-semibold transition-all cursor-pointer"
+      >
+        Projects List
+      </button>
+      <button
+        (click)="setTab('inquiries')"
+        [class]="activeTab === 'inquiries' ? 'bg-white text-slate-950 shadow-sm' : 'text-slate-600 hover:text-slate-900'"
+        class="px-5 py-2 rounded-lg text-sm font-semibold transition-all cursor-pointer"
+      >
+        Inquiries
+        @if (inquiries.length > 0) {
+          <span class="ml-1.5 px-2 py-0.5 text-[10px] bg-indigo-600 text-white rounded-full">
+            {{ inquiries.length }}
+          </span>
+        }
+      </button>
+    </div>
+  </div>
+
+  <!-- --- PROJECTS TAB --- -->
+  @if (activeTab === 'projects') {
+    <div class="space-y-6">
+      <div class="flex justify-between items-center">
+        <h2 class="text-xl font-bold text-slate-900">Showcase Catalogue ({{ projects.length }})</h2>
+        <button
+          (click)="openAddModal()"
+          class="px-4.5 py-2.5 bg-slate-900 hover:bg-slate-800 text-white text-sm font-semibold rounded-xl transition-all shadow flex items-center gap-1.5 cursor-pointer"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-4 h-4">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+          </svg>
+          Add New Project
+        </button>
+      </div>
+
+      <!-- Projects Loading -->
+      @if (loadingProjects) {
+        <div class="py-16 text-center text-slate-400 text-sm">
+          <div class="w-8 h-8 border-3 border-slate-200 border-t-indigo-600 rounded-full animate-spin mx-auto mb-3"></div>
+          Fetching projects database...
+        </div>
+      } @else {
+        <!-- Projects Table -->
+        <div class="bg-white border border-slate-100 rounded-2xl shadow-sm overflow-hidden">
+          <div class="overflow-x-auto">
+            <table class="w-full text-left border-collapse">
+              <thead>
+                <tr class="bg-slate-50 border-b border-slate-100 text-slate-500 text-[10px] uppercase font-bold tracking-wider">
+                  <th class="px-6 py-4">Image & Name</th>
+                  <th class="px-6 py-4">Category</th>
+                  <th class="px-6 py-4">Location</th>
+                  <th class="px-6 py-4">Year</th>
+                  <th class="px-6 py-4 text-center">Views</th>
+                  <th class="px-6 py-4 text-right">Actions</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-slate-50 text-sm">
+                @for (proj of projects; track proj.id) {
+                  <tr class="hover:bg-slate-50/50 transition-colors">
+                    <!-- Image & Name -->
+                    <td class="px-6 py-4 font-semibold text-slate-900 flex items-center gap-3">
+                      <img [src]="proj.imageUrl" [alt]="proj.name" class="w-12 h-12 object-cover rounded-lg border border-slate-100" />
+                      <div class="truncate max-w-[200px]">
+                        <span class="block text-slate-850 truncate">{{ proj.name }}</span>
+                        <span class="block text-[10px] text-slate-400 font-normal truncate">Architect: {{ proj.architect }}</span>
+                      </div>
+                    </td>
+                    <!-- Category -->
+                    <td class="px-6 py-4">
+                      <span class="px-2.5 py-1 text-xs font-semibold text-slate-650 bg-slate-100 rounded-md">
+                        {{ proj.category }}
+                      </span>
+                    </td>
+                    <!-- Location -->
+                    <td class="px-6 py-4 text-slate-550 max-w-[150px] truncate">{{ proj.location }}</td>
+                    <!-- Year -->
+                    <td class="px-6 py-4 text-slate-550">{{ proj.year }}</td>
+                    <!-- Views -->
+                    <td class="px-6 py-4 text-center font-medium text-slate-700">{{ proj.views }}</td>
+                    <!-- Actions -->
+                    <td class="px-6 py-4 text-right">
+                      <div class="flex items-center justify-end gap-2">
+                        <button
+                          (click)="openEditModal(proj)"
+                          class="p-2 bg-indigo-50 hover:bg-indigo-100 text-indigo-600 rounded-lg transition-colors cursor-pointer"
+                          title="Edit Project"
+                        >
+                          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-4 h-4">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L6.83 20.082a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10" />
+                          </svg>
+                        </button>
+                        <button
+                          (click)="onDeleteProject(proj.id, proj.name)"
+                          class="p-2 bg-rose-50 hover:bg-rose-100 text-rose-600 rounded-lg transition-colors cursor-pointer"
+                          title="Delete Project"
+                        >
+                          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-4 h-4">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" />
+                          </svg>
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                } @empty {
+                  <tr>
+                    <td colspan="6" class="px-6 py-12 text-center text-slate-450">
+                      No projects available in the database. Add a project to get started.
+                    </td>
+                  </tr>
+                }
+              </tbody>
+            </table>
+          </div>
+        </div>
+      }
+    </div>
+  }
+
+  <!-- --- INQUIRIES TAB --- -->
+  @if (activeTab === 'inquiries') {
+    <div class="space-y-6">
+      <h2 class="text-xl font-bold text-slate-900">Submitted Client Inquiries ({{ inquiries.length }})</h2>
+
+      <!-- Inquiries Loading -->
+      @if (loadingInquiries) {
+        <div class="py-16 text-center text-slate-400 text-sm">
+          <div class="w-8 h-8 border-3 border-slate-200 border-t-indigo-600 rounded-full animate-spin mx-auto mb-3"></div>
+          Fetching inquiries database...
+        </div>
+      } @else {
+        <!-- Inquiries Table -->
+        <div class="bg-white border border-slate-100 rounded-2xl shadow-sm overflow-hidden">
+          <div class="overflow-x-auto">
+            <table class="w-full text-left border-collapse">
+              <thead>
+                <tr class="bg-slate-50 border-b border-slate-100 text-slate-500 text-[10px] uppercase font-bold tracking-wider">
+                  <th class="px-6 py-4">Project</th>
+                  <th class="px-6 py-4">Client Detail</th>
+                  <th class="px-6 py-4">Message Inquiry</th>
+                  <th class="px-6 py-4">Received Date</th>
+                  <th class="px-6 py-4 text-right">Action</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-slate-50 text-sm">
+                @for (inq of inquiries; track inq.id) {
+                  <tr class="hover:bg-slate-50/50 transition-colors">
+                    <!-- Project -->
+                    <td class="px-6 py-4 font-semibold text-slate-800 max-w-[150px] truncate">
+                      {{ inq.projectName || 'Deleted Project' }}
+                    </td>
+                    <!-- Client Detail -->
+                    <td class="px-6 py-4">
+                      <div class="max-w-[200px]">
+                        <span class="block font-semibold text-slate-900 truncate">{{ inq.name }}</span>
+                        <span class="block text-xs text-slate-400 truncate">{{ inq.email }}</span>
+                        @if (inq.phone) {
+                          <span class="block text-[10px] text-slate-400 truncate">Tel: {{ inq.phone }}</span>
+                        }
+                      </div>
+                    </td>
+                    <!-- Message -->
+                    <td class="px-6 py-4 text-slate-650 max-w-[280px]">
+                      <p class="line-clamp-3 leading-relaxed whitespace-pre-line text-xs">
+                        {{ inq.message }}
+                      </p>
+                    </td>
+                    <!-- Date -->
+                    <td class="px-6 py-4 text-slate-500 text-xs">
+                      {{ inq.createdAt | date:'short' }}
+                    </td>
+                    <!-- Action -->
+                    <td class="px-6 py-4 text-right">
+                      <button
+                        (click)="onDeleteInquiry(inq.id)"
+                        class="p-2 bg-rose-50 hover:bg-rose-100 text-rose-600 rounded-lg transition-colors cursor-pointer"
+                        title="Delete Inquiry"
+                      >
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-4 h-4">
+                          <path stroke-linecap="round" stroke-linejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" />
+                        </svg>
+                      </button>
+                    </td>
+                  </tr>
+                } @empty {
+                  <tr>
+                    <td colspan="5" class="px-6 py-12 text-center text-slate-450">
+                      No inquiries recorded. Submit an inquiry form from any project detail page to test.
+                    </td>
+                  </tr>
+                }
+              </tbody>
+            </table>
+          </div>
+        </div>
+      }
+    </div>
+  }
+</div>
+
+<!-- --- ADD/EDIT PROJECT MODAL --- -->
+@if (isModalOpen) {
+  <div class="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-slate-950/45 backdrop-blur-sm">
+    <!-- Modal Container -->
+    <div
+      class="bg-white rounded-2xl shadow-2xl border border-slate-100 w-full max-w-3xl overflow-hidden max-h-[90vh] flex flex-col animate-modal-entry"
+      (click)="$event.stopPropagation()"
+    >
+      <!-- Modal Header -->
+      <div class="px-6 py-4.5 bg-slate-50 border-b border-slate-100 flex justify-between items-center shrink-0">
+        <h3 class="text-lg font-bold text-slate-900">
+          {{ isEditing ? 'Edit Architectural Project' : 'Add New Showcase Project' }}
+        </h3>
+        <button
+          (click)="closeModal()"
+          class="text-slate-400 hover:text-slate-700 bg-slate-200/50 p-1.5 rounded-full transition-all cursor-pointer"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-4.5 h-4.5">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
+          </svg>
+        </button>
+      </div>
+
+      <!-- Modal Body (Form Container) -->
+      <div class="p-6 overflow-y-auto flex-grow">
+        @if (formError) {
+          <div class="bg-rose-500/10 border border-rose-500/20 text-rose-500 p-4 rounded-xl text-sm mb-5">
+            {{ formError }}
+          </div>
+        }
+
+        <form
+          (submit)="onSaveProject(
+            name.value, 
+            category.value, 
+            location.value, 
+            year.value, 
+            area.value, 
+            budget.value, 
+            architect.value, 
+            client.value, 
+            imageUrl.value, 
+            addImages.value, 
+            description.value, 
+            features.value,
+            $event
+          )"
+          class="space-y-5"
+        >
+          <!-- Grid Rows -->
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <!-- Project Name -->
+            <div class="md:col-span-2">
+              <label for="p-name" class="block text-slate-600 text-[10px] uppercase font-bold tracking-wider mb-1">
+                Project Name <span class="text-rose-450">*</span>
+              </label>
+              <input
+                type="text"
+                id="p-name"
+                #name
+                [value]="currentForm.name"
+                placeholder="e.g. Amanoi Resort Pavilion"
+                class="w-full bg-slate-50 border border-slate-200 text-slate-800 rounded-lg px-3 py-2 text-sm outline-none focus:border-indigo-500 transition-colors"
+                required
+              />
+            </div>
+
+            <!-- Category -->
+            <div>
+              <label for="p-cat" class="block text-slate-600 text-[10px] uppercase font-bold tracking-wider mb-1">
+                Category <span class="text-rose-450">*</span>
+              </label>
+              <select
+                id="p-cat"
+                #category
+                [value]="currentForm.category"
+                class="w-full bg-slate-50 border border-slate-200 text-slate-800 rounded-lg px-3 py-2 text-sm outline-none focus:border-indigo-500 transition-colors cursor-pointer"
+                required
+              >
+                <option value="Residential">Residential</option>
+                <option value="Hospitality">Hospitality</option>
+                <option value="Commercial">Commercial</option>
+                <option value="Landscape">Landscape</option>
+                <option value="Interior">Interior</option>
+              </select>
+            </div>
+
+            <!-- Location -->
+            <div>
+              <label for="p-loc" class="block text-slate-600 text-[10px] uppercase font-bold tracking-wider mb-1">
+                Location <span class="text-rose-450">*</span>
+              </label>
+              <input
+                type="text"
+                id="p-loc"
+                #location
+                [value]="currentForm.location"
+                placeholder="e.g. Danang, Vietnam"
+                class="w-full bg-slate-50 border border-slate-200 text-slate-800 rounded-lg px-3 py-2 text-sm outline-none focus:border-indigo-500 transition-colors"
+                required
+              />
+            </div>
+
+            <!-- Year -->
+            <div>
+              <label for="p-year" class="block text-slate-600 text-[10px] uppercase font-bold tracking-wider mb-1">
+                Year Completed <span class="text-rose-450">*</span>
+              </label>
+              <input
+                type="number"
+                id="p-year"
+                #year
+                [value]="currentForm.year"
+                placeholder="e.g. 2024"
+                class="w-full bg-slate-50 border border-slate-200 text-slate-800 rounded-lg px-3 py-2 text-sm outline-none focus:border-indigo-500 transition-colors"
+                required
+              />
+            </div>
+
+            <!-- Total Area -->
+            <div>
+              <label for="p-area" class="block text-slate-600 text-[10px] uppercase font-bold tracking-wider mb-1">
+                Total Area <span class="text-rose-450">*</span>
+              </label>
+              <input
+                type="text"
+                id="p-area"
+                #area
+                [value]="currentForm.area"
+                placeholder="e.g. 450 m²"
+                class="w-full bg-slate-50 border border-slate-200 text-slate-800 rounded-lg px-3 py-2 text-sm outline-none focus:border-indigo-500 transition-colors"
+                required
+              />
+            </div>
+
+            <!-- Budget -->
+            <div>
+              <label for="p-budget" class="block text-slate-600 text-[10px] uppercase font-bold tracking-wider mb-1">
+                Financial Budget <span class="text-rose-450">*</span>
+              </label>
+              <input
+                type="text"
+                id="p-budget"
+                #budget
+                [value]="currentForm.budget"
+                placeholder="e.g. $1.8M"
+                class="w-full bg-slate-50 border border-slate-200 text-slate-800 rounded-lg px-3 py-2 text-sm outline-none focus:border-indigo-500 transition-colors"
+                required
+              />
+            </div>
+
+            <!-- Lead Architect -->
+            <div>
+              <label for="p-arch" class="block text-slate-600 text-[10px] uppercase font-bold tracking-wider mb-1">
+                Lead Architect <span class="text-rose-450">*</span>
+              </label>
+              <input
+                type="text"
+                id="p-arch"
+                #architect
+                [value]="currentForm.architect"
+                placeholder="e.g. Jean-Michel Gathy"
+                class="w-full bg-slate-50 border border-slate-200 text-slate-800 rounded-lg px-3 py-2 text-sm outline-none focus:border-indigo-500 transition-colors"
+                required
+              />
+            </div>
+
+            <!-- Client Name -->
+            <div class="md:col-span-2">
+              <label for="p-client" class="block text-slate-600 text-[10px] uppercase font-bold tracking-wider mb-1">
+                Client Corporate Name <span class="text-rose-450">*</span>
+              </label>
+              <input
+                type="text"
+                id="p-client"
+                #client
+                [value]="currentForm.client"
+                placeholder="e.g. Aman Resorts Inc."
+                class="w-full bg-slate-50 border border-slate-200 text-slate-800 rounded-lg px-3 py-2 text-sm outline-none focus:border-indigo-500 transition-colors"
+                required
+              />
+            </div>
+
+            <!-- Main Image URL -->
+            <div class="md:col-span-2">
+              <label for="p-img" class="block text-slate-600 text-[10px] uppercase font-bold tracking-wider mb-1">
+                Main Banner Image URL <span class="text-rose-450">*</span>
+              </label>
+              <input
+                type="url"
+                id="p-img"
+                #imageUrl
+                [value]="currentForm.imageUrl"
+                placeholder="https://images.unsplash.com/photo-..."
+                class="w-full bg-slate-50 border border-slate-200 text-slate-800 rounded-lg px-3 py-2 text-sm outline-none focus:border-indigo-500 transition-colors"
+                required
+              />
+            </div>
+
+            <!-- Gallery Image URLs -->
+            <div class="md:col-span-2">
+              <label for="p-add-img" class="block text-slate-600 text-[10px] uppercase font-bold tracking-wider mb-1">
+                Gallery Showcase Images (Comma-separated URLs)
+              </label>
+              <textarea
+                id="p-add-img"
+                #addImages
+                [value]="currentForm.additionalImages"
+                rows="2"
+                placeholder="https://images.unsplash.com/photo1, https://images.unsplash.com/photo2"
+                class="w-full bg-slate-50 border border-slate-200 text-slate-800 rounded-lg px-3 py-2 text-sm outline-none focus:border-indigo-500 transition-colors resize-none"
+              ></textarea>
+            </div>
+
+            <!-- Key Features / Highlights -->
+            <div class="md:col-span-2">
+              <label for="p-features" class="block text-slate-600 text-[10px] uppercase font-bold tracking-wider mb-1">
+                Key Features & Highlights (Comma-separated values) <span class="text-rose-450">*</span>
+              </label>
+              <input
+                type="text"
+                id="p-features"
+                #features
+                [value]="currentForm.features"
+                placeholder="Infinity Pool with Bay View, natural ventilation, smart lighting"
+                class="w-full bg-slate-50 border border-slate-200 text-slate-800 rounded-lg px-3 py-2 text-sm outline-none focus:border-indigo-500 transition-colors"
+                required
+              />
+            </div>
+
+            <!-- Project Description -->
+            <div class="md:col-span-2">
+              <label for="p-desc" class="block text-slate-600 text-[10px] uppercase font-bold tracking-wider mb-1">
+                Architectural Narrative Description <span class="text-rose-450">*</span>
+              </label>
+              <textarea
+                id="p-desc"
+                #description
+                [value]="currentForm.description"
+                rows="4"
+                placeholder="Describe the architectural design concept, topographical integration, materials palette, and structural philosophy..."
+                class="w-full bg-slate-50 border border-slate-200 text-slate-800 rounded-lg px-3 py-2 text-sm outline-none focus:border-indigo-500 transition-colors resize-none"
+                required
+              ></textarea>
+            </div>
+          </div>
+
+          <!-- Modal Action Buttons Footer -->
+          <div class="border-t border-slate-100 pt-5 flex items-center justify-end gap-3 shrink-0">
+            <button
+              type="button"
+              (click)="closeModal()"
+              class="px-4 py-2 border border-slate-200 text-slate-700 font-semibold rounded-lg text-sm hover:bg-slate-50 transition-colors cursor-pointer"
+            >
+              Cancel
+            </button>
+            <button
+              type="submit"
+              [disabled]="savingProject"
+              class="px-5 py-2 bg-indigo-650 hover:bg-indigo-750 disabled:bg-indigo-850 text-white font-semibold rounded-lg text-sm transition-colors shadow flex items-center gap-1.5 cursor-pointer"
+            >
+              @if (savingProject) {
+                <div class="w-4 h-4 border-2 border-white/20 border-t-white rounded-full animate-spin"></div>
+                Saving...
+              } @else {
+                Save Project
+              }
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+}
+
+<style>
+  @keyframes modal-entry {
+    from {
+      opacity: 0;
+      transform: scale(0.96) translateY(8px);
+    }
+    to {
+      opacity: 1;
+      transform: scale(1) translateY(0);
+    }
+  }
+  .animate-modal-entry {
+    animation: modal-entry 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  }
+</style>

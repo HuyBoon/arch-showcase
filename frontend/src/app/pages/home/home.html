@@ -1,0 +1,159 @@
+<!-- Hero Section -->
+<section class="relative h-[500px] md:h-[550px] flex items-center overflow-hidden bg-slate-950">
+  <!-- Backdrop Image -->
+  <div class="absolute inset-0 z-0">
+    <img
+      src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?q=80&w=1600"
+      alt="Modern Architecture Cover"
+      class="w-full h-full object-cover opacity-35 scale-105 animate-pulse-slow"
+      style="animation: zoom-pulse 30s infinite alternate;"
+    />
+    <div class="absolute inset-0 bg-gradient-to-t from-slate-900 via-slate-900/60 to-transparent"></div>
+  </div>
+
+  <div class="container mx-auto max-w-7xl px-6 relative z-10 text-white">
+    <div class="max-w-3xl space-y-6">
+      <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-indigo-500/10 border border-indigo-400/20 text-indigo-300 text-xs font-semibold tracking-wide uppercase">
+        <span class="w-1.5 h-1.5 rounded-full bg-indigo-400 animate-ping"></span>
+        Architectural Showcase
+      </span>
+      <h1 class="text-4xl md:text-6xl font-extrabold tracking-tight leading-tight md:leading-none">
+        Shaping the Future of <br>
+        <span class="bg-gradient-to-r from-indigo-400 via-purple-300 to-indigo-200 bg-clip-text text-transparent">Space & Living</span>
+      </h1>
+      <p class="text-lg text-slate-300 font-light leading-relaxed max-w-2xl">
+        Explore our curated collection of award-winning residential villas, boutique hotels, high-rise office towers, and sustainable landscape pavilions.
+      </p>
+      
+      <div class="flex flex-wrap gap-4 pt-2">
+        <a href="#showcase" class="px-6 py-3 bg-white text-slate-900 font-semibold rounded-xl hover:bg-slate-100 hover:shadow-lg transition-all duration-300 cursor-pointer">
+          View Projects
+        </a>
+        <a href="/about" class="px-6 py-3 bg-slate-800/80 border border-slate-700 backdrop-blur-sm text-white font-semibold rounded-xl hover:bg-slate-700/80 transition-all duration-300 cursor-pointer">
+          About Studio
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Glassmorphism Stats Banner (Overlapping bottom) -->
+  <div class="absolute bottom-0 left-0 w-full transform translate-y-1/2 z-20">
+    <div class="container mx-auto max-w-7xl px-6">
+      <div class="grid grid-cols-3 gap-4 md:gap-8 bg-slate-900/80 border border-slate-850 backdrop-blur-md rounded-2xl p-6 md:p-8 shadow-xl text-center">
+        <div>
+          <div class="text-2xl md:text-4xl font-extrabold text-white">150+</div>
+          <div class="text-xs md:text-sm text-slate-400 mt-1">Completed Projects</div>
+        </div>
+        <div class="border-x border-slate-800">
+          <div class="text-2xl md:text-4xl font-extrabold text-white">20+</div>
+          <div class="text-xs md:text-sm text-slate-400 mt-1">Design Awards</div>
+        </div>
+        <div>
+          <div class="text-2xl md:text-4xl font-extrabold text-white">12+</div>
+          <div class="text-xs md:text-sm text-slate-400 mt-1">Countries Active</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Main Showcase Section -->
+<section id="showcase" class="container mx-auto px-6 py-20 max-w-7xl mt-12">
+  <div class="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12">
+    <div>
+      <h2 class="text-3xl md:text-4xl font-extrabold text-slate-900 tracking-tight">
+        Featured Projects
+      </h2>
+      <p class="text-slate-500 mt-2">
+        Discover spaces designed with innovation, context, and structural beauty.
+      </p>
+    </div>
+
+    <!-- Sorting Dropdown -->
+    <div class="flex items-center gap-3 self-start md:self-end">
+      <label for="sortBy" class="text-sm font-semibold text-slate-600 shrink-0">Sort By:</label>
+      <select
+        id="sortBy"
+        [value]="sortBy"
+        (change)="onSortChange($event)"
+        class="bg-white border border-slate-200 text-slate-700 text-sm rounded-xl px-4 py-2.5 outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-colors shadow-sm cursor-pointer"
+      >
+        <option value="latest">Latest Addition</option>
+        <option value="views">Most Popular</option>
+        <option value="area">Largest Area</option>
+      </select>
+    </div>
+  </div>
+
+  <!-- Search and Categories Filter Bar -->
+  <div class="bg-slate-50 border border-slate-200/60 rounded-2xl p-4 md:p-6 mb-10 flex flex-col lg:flex-row gap-5 items-center justify-between shadow-sm">
+    <!-- Category Buttons -->
+    <div class="flex gap-2 overflow-x-auto w-full lg:w-auto pb-2 lg:pb-0 scrollbar-none snap-x">
+      @for (cat of categories; track cat) {
+        <button
+          (click)="selectCategory(cat)"
+          [class]="selectedCategory === cat 
+            ? 'bg-slate-900 text-white shadow-md' 
+            : 'bg-white text-slate-600 hover:text-slate-900 border border-slate-200/80 hover:border-slate-300'"
+          class="px-4 py-2 rounded-xl text-sm font-semibold transition-all duration-200 cursor-pointer whitespace-nowrap snap-center"
+        >
+          {{ cat }}
+        </button>
+      }
+    </div>
+
+    <!-- Search Input -->
+    <div class="relative w-full lg:w-96 shrink-0">
+      <div class="absolute inset-y-0 left-3.5 flex items-center pointer-events-none text-slate-400">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5">
+          <path stroke-linecap="round" stroke-linejoin="round" d="m21-21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
+        </svg>
+      </div>
+      <input
+        type="text"
+        placeholder="Search by name, architect, location..."
+        [value]="searchQuery"
+        (input)="onSearch($event)"
+        class="w-full bg-white border border-slate-200 text-slate-800 placeholder-slate-400 text-sm rounded-xl pl-11 pr-4 py-2.5 outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-colors shadow-sm"
+      />
+    </div>
+  </div>
+
+  <!-- Projects Grid -->
+  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+    @for (item of projects; track item.id) {
+      <app-project-card [project]="item"></app-project-card>
+    } @empty {
+      <div class="col-span-full py-20 text-center bg-slate-50 rounded-2xl border border-dashed border-slate-350">
+        <div class="w-16 h-16 bg-slate-100 text-slate-400 rounded-full flex items-center justify-center mx-auto mb-4">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-8 h-8">
+            <path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
+          </svg>
+        </div>
+        <h3 class="text-lg font-bold text-slate-850">No Projects Found</h3>
+        <p class="text-slate-500 text-sm mt-1 max-w-xs mx-auto">
+          We couldn't find any projects matching your search criteria. Try modifying your filters.
+        </p>
+      </div>
+    }
+  </div>
+</section>
+
+<!-- Custom Parallax Keyframe Styles -->
+<style>
+  @keyframes zoom-pulse {
+    from {
+      transform: scale(1.02);
+    }
+    to {
+      transform: scale(1.08);
+    }
+  }
+  .scrollbar-none::-webkit-scrollbar {
+    display: none;
+  }
+  .scrollbar-none {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+</style>

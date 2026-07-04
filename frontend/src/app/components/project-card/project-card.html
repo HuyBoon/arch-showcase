@@ -1,0 +1,69 @@
+<div
+  [routerLink]="['/project', project.id]"
+  class="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden transition-all duration-300 hover:-translate-y-1.5 hover:shadow-lg cursor-pointer group flex flex-col h-full"
+  [attr.data-id]="project.id"
+  data-target="project-card"
+>
+  <!-- Card Image Cover -->
+  <div class="relative overflow-hidden h-60 shrink-0">
+    <img
+      [src]="project.imageUrl"
+      [alt]="project.name"
+      [style.view-transition-name]="'project-image-' + project.id"
+      class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+    />
+    
+    <!-- Category Badge -->
+    <div class="absolute top-4 left-4 bg-slate-900/70 backdrop-blur-md px-3 py-1 rounded-lg border border-white/10 shadow-sm">
+      <span class="text-xs font-semibold text-slate-100 tracking-wide uppercase">
+        {{ project.category }}
+      </span>
+    </div>
+
+    <!-- Views Badge -->
+    <div class="absolute top-4 right-4 bg-white/80 backdrop-blur-md px-2.5 py-1 rounded-lg shadow-sm flex items-center gap-1 text-slate-700 text-xs font-medium">
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-3.5 h-3.5">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 0 1 0-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178Z" />
+        <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
+      </svg>
+      {{ project.views }}
+    </div>
+  </div>
+
+  <!-- Card Body -->
+  <div class="p-6 flex flex-col flex-grow">
+    <!-- Meta Info: Location & Year -->
+    <div class="flex items-center justify-between text-xs text-slate-400 font-medium mb-3">
+      <div class="flex items-center gap-1">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-3.5 h-3.5 text-slate-400 shrink-0">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
+          <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1 1 15 0Z" />
+        </svg>
+        <span class="truncate max-w-[150px]">{{ project.location }}</span>
+      </div>
+      <span>{{ project.year }}</span>
+    </div>
+
+    <!-- Title -->
+    <h3 class="text-xl font-bold text-slate-900 group-hover:text-indigo-600 transition-colors line-clamp-1 mb-2">
+      {{ project.name }}
+    </h3>
+
+    <!-- Description Snippet -->
+    <p class="text-sm text-slate-500 line-clamp-2 leading-relaxed flex-grow mb-4">
+      {{ project.description }}
+    </p>
+
+    <!-- Specifications Footer -->
+    <div class="border-t border-slate-50 pt-4 flex items-center justify-between mt-auto">
+      <div class="text-left">
+        <div class="text-[10px] text-slate-450 uppercase font-bold tracking-wider">Area</div>
+        <div class="text-sm font-semibold text-slate-800">{{ project.area }}</div>
+      </div>
+      <div class="text-right">
+        <div class="text-[10px] text-slate-450 uppercase font-bold tracking-wider">Budget</div>
+        <div class="text-sm font-semibold text-slate-800">{{ project.budget }}</div>
+      </div>
+    </div>
+  </div>
+</div>
